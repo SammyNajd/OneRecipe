@@ -1,4 +1,4 @@
-Hello PERSON_NAME!\n
+Hello PERSON_NAME!
 
 Hope you are having a wonderful morning. We have something delicious for you to try at dinner! Take a look at the ingredients needed for this recipe.\n 
 
