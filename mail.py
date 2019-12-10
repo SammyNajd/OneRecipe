@@ -49,12 +49,13 @@ def send_mail(ingredient_links):
     s.starttls()
     s.login(config.ADDRESS, config.PASSWORD)
 
+    print (names)
     # For each contact, send the email:
     for name, email in zip(names, emails):
         msg = MIMEMultipart()     
 
         # add in the actual person name to the message template
-        message = message_template.substitute(PERSON_NAME=name.title())
+        message = message_template.substitute(PERSON_NAME=name)
         counter = 1
         for link in ingredient_links:
             message += str(counter) + '. ' + link 
@@ -63,7 +64,7 @@ def send_mail(ingredient_links):
         message += config.SIGN_OFF
         # setup the parameters of the message
         msg['From']= config.ADDRESS
-        msg['To']= 'sammy.najd@gmail.com'
+        msg['To']= email
         msg['Subject']="Your daily recipe"
         
         # add in the message body

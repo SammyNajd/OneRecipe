@@ -96,7 +96,7 @@ def constructMail(urls, prices, titles):
 
     
 def main():
-    items = ["lettuce", "Ground Beef"]
+    items = ["Lime"]
     scrape = FreshScraper(items)
     urls, prices, titles = scrape.search_items()
     
