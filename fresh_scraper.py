@@ -15,7 +15,7 @@ from selenium.webdriver.chrome.options import Options
 import config
 import mail
 import time
-
+import spoonacular_get as spn
 
 class FreshScraper():
         
@@ -43,7 +43,8 @@ class FreshScraper():
         
         for item in self.items:
             print(f"Searching for {item}")
-                         
+            self.driver.get(self.fresh_url)
+               
             search_bar = self.driver.find_element_by_id('twotabsearchtextbox')
             search_bar.send_keys(item)
             
@@ -54,19 +55,8 @@ class FreshScraper():
             
             time.sleep(2)
             
-         #   WebDriverWait(self.driver, 5).until(visibility_of_element_located((By.XPATH,'//*[@id="a-autoid-0-announce"]' )))
-            sort_by = self.driver.find_element_by_xpath('//*[@id="a-autoid-0-announce"]')
-            sort_by.click()
-            
-            time.sleep(2)
-            
-            sort_by_low_high = self.driver.find_element_by_xpath('//*[@id="s-result-sort-select_1"]')
-            sort_by_low_high.click()
-            
-            time.sleep(2)
-            
-            search_results = self.driver.find_element_by_xpath('//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[1]/div/span/div/div/div[2]/div[3]/div/div/h2/a')
-            result_url = search_results.get_attribute('href')
+            search_results = self.driver.find_element_by_css_selector("div[data-index='0']")
+            result_url = search_results.find_element_by_css_selector('a.a-link-normal.a-text-normal').get_attribute('href')
             self.driver.get(result_url)
             
             title = self.driver.find_element_by_id('productTitle').text
@@ -76,7 +66,10 @@ class FreshScraper():
             prices.append(price)
             titles.append(title)
             
+            
             self.driver.get(self.fresh_url)
+            
+            time.sleep(1)
             
         
         self.driver.close() 
@@ -96,11 +89,11 @@ def constructMail(urls, prices, titles):
 
     
 def main():
-    items = ["Lime"]
-    scrape = FreshScraper(items)
-    urls, prices, titles = scrape.search_items()
+    recipe_title, recipe_ingr, fresh_ingr, time, serving_ct, instru, link = spn.get_random_recipe() 
+    scrape = FreshScraper(fresh_ingr)
+    urls, prices, ingr_names = scrape.search_items()
     
-    ingredient_links = constructMail(urls, prices, titles)
+    ingredient_links = constructMail(urls, prices, ingr_names)
     mail.send_mail(ingredient_links)
     print('mail should be sent')
             
